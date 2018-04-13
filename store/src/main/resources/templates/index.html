@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css}" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+<head>
+    <title>Bookstore</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div class="container">
+	<h1>Books</h1>
+	
+	<h4 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h4>
+	<div class="col-md-" style="padding:20px 0">	
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" class="btn btn-danger"/>
+		</form>
+	</div>
+    <table class="table table-striped">
+		<tr>
+		    <th>Title</th>
+		    <th>Author</th>
+		    <th>Year</th>
+		    <th>Isbn</th>
+		    <th>Price</th>
+		    <th>Category</th>
+		    <th sec:authorize="hasRole('ADMIN')"></th>
+		</tr>  
+    	<tr th:each = "book : ${books}">
+    		<td th:text="${book.title}"></td>
+    		<td th:text="${book.author}"></td>
+    		<td th:text="${book.year}"></td>
+    		<td th:text="${book.isbn}"></td>
+    		<td th:text="${book.price}"></td>
+    		<td th:text="${book.category.name}"></td>
+ 			
+  			
+  			<td sec:authorize="hasAuthority('ADMIN')">
+  			 <form>
+  			<button th:formaction="@{/delete/{id}(id=${book.id})}" class="btn btn-danger">Delete</button>
+			</form>
+  			</td>
+  			
+  			<td sec:authorize="hasAuthority('ADMIN')">
+  			 <form>
+  			<button th:formaction="@{/edit/{id}(id=${book.id})}" class="btn btn-primary">Edit</button>
+  			</form>
+  			</td> 		    		
+    	</tr>
+     </table>
+     
+	 <form sec:authorize="hasAuthority('ADMIN')">
+  	<button th:formaction="@{add}" class="btn btn-success">Add</button>
+	</form>
+	 </div>	
+</body>
+</html>
